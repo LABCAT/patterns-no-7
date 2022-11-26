@@ -1,0 +1,86 @@
+AMS 1
+Generate MultiCycleFM
+BaseNote 42
+RootKey 42
+SampleRate 44100
+Channels 1
+BitsPerSample 32
+Volume Auto
+Sine 1 1000.000
+Sine 2 1000.000
+Sine 3 1000.000
+Sine 4 1000.000
+Sine 5 1000.000
+Sine 6 1000.000
+Sine 7 1000.000
+Sine 8 1000.000
+Sine 9 1000.000
+Sine 10 1000.000
+Sine 13 1000.000
+Sine 14 1000.000
+Sine 20 112.202
+Sine 21 112.202
+Sine 22 112.202
+Sine 23 7.079
+Sine 24 5.623
+Sine 25 2.512
+Sine 26 2.512
+Sine 29 1000.000
+Sine 30 1000.000
+Sine 32 0.355
+Sine 33 79.433
+Sine 34 79.433
+Sine 35 79.433
+Sine 36 79.433
+Sine 37 0.355
+Sine 38 1000.000
+Sine 39 1000.000
+Sine 40 0.355
+Sine 41 19.953
+Sine 42 19.953
+Sine 43 19.953
+Sine 44 19.953
+Sine 45 19.953
+Sine 46 19.953
+Sine 49 1000.000
+Sine 50 1000.000
+Sine 51 891.251
+Sine 54 7.943
+Sine 55 7.079
+Sine 56 7.079
+Sine 57 7.079
+Sine 58 7.079
+Sine 59 7.079
+Sine 60 7.079
+Sine 63 1000.000
+Sine 64 1000.000
+Sine 67 4.467
+Sine 68 4.467
+Sine 69 4.467
+Sine 70 4.467
+Sine 71 4.467
+Sine 72 4.467
+Sine 73 5.012
+Sine 74 0.355
+Sine 75 0.355
+Sine 76 0.355
+Sine 77 1000.000
+Sine 78 1000.000
+Sine 79 1000.000
+Sine 80 0.355
+Sine 81 0.355
+Sine 82 2.818
+Sine 83 2.818
+Sine 84 2.818
+Sine 85 2.818
+Sine 86 2.512
+Sine 87 2.239
+Sine 88 1.995
+Sine 89 0.355
+Sine 90 0.355
+Sine 91 1000.000
+Sine 92 1000.000
+Sine 93 1000.000
+Sine 94 1000.000
+Sine 95 1000.000
+Sine 96 1000.000

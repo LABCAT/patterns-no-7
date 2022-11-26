@@ -1,0 +1,16 @@
+AMS 1
+Generate MultiCycleFM
+BaseNote 97
+RootKey 97
+SampleRate 44100
+Channels 1
+BitsPerSample 32
+Volume Auto
+Sine 1 1000.000
+Sine 2 15.849
+Sine 3 31.623
+Sine 4 112.202
+Sine 5 1000.000
+Sine 6 891.251
+Sine 7 316.228
+Sine 8 158.489
