@@ -28,6 +28,7 @@ const P5SketchWithAudio = () => {
         p.loadMidi = () => {
             Midi.fromUrl(midi).then(
                 function(result) {
+                    console.log(result);
                     const noteSet1 = result.tracks[1].notes;
                     p.scheduleCueSet(noteSet1, 'executeCueSet1');
                     p.audioLoaded = true;
@@ -61,42 +62,84 @@ const P5SketchWithAudio = () => {
         p.setup = () => {
             p.canvas = p.createCanvas(p.canvasWidth, p.canvasHeight);
             p.background(0);
-            p.rectMode(p.CENTER);
+            p.colorMode(p.HSB);
             p.noLoop();
             
+            let size = p.width / 64;
+
+            p.rects = [];
+
+            
+            p.colourScheme = [];
+            let baseHue = p.random(0, 360);
+            for (let i = 0; i < 5; i++) {
+                p.colourScheme.push(
+                    baseHue
+                );
+                baseHue = baseHue + 90 > 360 ? baseHue - 270 : baseHue + 90;
+            }
+            
+            let loopIndex = 1;
+            for (let i = 1; i < 32; i++) {
+                const colour = p.color(
+                    p.colourScheme[i % 5], 100, 100
+                );
+                
+                for (let x = -i; x < i; x++) {
+                    for (let y = -i; y < i; y++) {
+
+                        const key = x + '-' + y;
+                        if (! p.rects.some(r => r.key === key)) {
+                            p.rects.push(
+                                {
+                                    key: key,
+                                    x: x,
+                                    y: y,
+                                    colour: colour,
+                                    loopIndex: loopIndex,
+                                    size: size
+                                }
+                            );
+                        }
+                        
+                    }
+                }
+                loopIndex++;
+                
+            }
         }
 
         p.draw = () => {
-            let x = 0,
-                y = 0,
-                size = p.width / 32;
             p.translate(p.width / 2, p.height / 2);
-            for (let i = 1; i < 3; i++) {
-                let x1 = size * (-1 * i) + size / 2;
-                let y1 = size * (-1 * i) + size / 2;
-                let x2 = size * (-1 * i) + size / 2;
-                let y2 = size * i  - size / 2;
-                let x3 = size * i  - size / 2;
-                let y3 = size * (-1 * i) + size / 2;
-                let x4 = size * i  - size / 2;
-                let y4 = size * i  - size / 2;
-                p.fill(p.random(255), p.random(255), p.random(255));
-                p.rect(x1, y1, size, size);
-                p.rect(x2, y2, size, size);
-                p.rect(x3, y3, size, size);
-                p.rect(x4, y4, size, size);
-                
-            }
             if(p.audioLoaded && p.song.isPlaying()){
 
             }
         }
 
         p.executeCueSet1 = (note) => {
-            p.background(p.random(255), p.random(255), p.random(255));
-            p.fill(p.random(255), p.random(255), p.random(255));
-            p.noStroke();
-            p.ellipse(p.width / 2, p.height / 2, p.width / 4, p.width / 4);
+            const { currentCue, duration } = note,
+                loopsPerBar = 32,
+                delay = (duration * 1000) / loopsPerBar;
+            p.clear();
+            p.rects.filter(rect => rect.loopIndex === currentCue).forEach(rect => {
+                const { key, x, y, colour, size } = rect;
+                p.fill(colour);
+                p.rect(size * x, size * y, size, size);
+            });
+
+            for (let i = 1; i <= loopsPerBar; i++) {
+                setTimeout(
+                    function () {
+                        p.rects.filter(rect => rect.loopIndex === i).forEach(rect => {
+                            const { key, x, y, colour, size } = rect;
+                            p.fill(colour);
+                            p.rect(size * x, size * y, size, size);
+                        });
+                    },
+                    (delay * i)
+                );
+                
+            }
         }
 
         p.hasStarted = false;
