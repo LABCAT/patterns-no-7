@@ -4,6 +4,7 @@ import "p5/lib/addons/p5.sound";
 import * as p5 from "p5";
 import { Midi } from '@tonejs/midi'
 import PlayIcon from './functions/PlayIcon.js';
+import SaveJSONToFile from './functions/SaveJSONToFile.js';
 
 import audio from "../audio/patterns-no-7.ogg";
 import midi from "../audio/patterns-no-7.mid";
@@ -64,7 +65,8 @@ const P5SketchWithAudio = () => {
             p.background(0);
             p.colorMode(p.HSB);
             p.noLoop();
-            p.generateCells();
+            // p.generateCells();
+            p.cells = require('../json/grid-64x64.json');
         }
 
         p.draw = () => {
@@ -100,7 +102,7 @@ const P5SketchWithAudio = () => {
             
 
             for (let i = 1; i <= loopsPerBar; i++) {
-                const cellPattern = p.random(['cross', 'plus','circle','split-circles']),
+                const cellPattern = p.random(['cross', 'horizontal-lines','circle','split-circles']),
                     colour = p.color(
                         colourScheme[i % 10], saturation, brightness
                     ),
@@ -109,10 +111,9 @@ const P5SketchWithAudio = () => {
                 setTimeout(
                     function () {
                         p.cells.filter(rect => rect.loopIndex === i).forEach(rect => {
-                            const { x, y } = rect;
+                            const { x, y, loopIndex } = rect;
                             p.fill(colour);
-                            
-                            // p.noStroke();
+                            p.noStroke();
                             p.rect(size * x, size * y, size, size);
 
                             p.stroke(0, 0, 100);
@@ -128,9 +129,30 @@ const P5SketchWithAudio = () => {
                                 p.line(size * x + size, size * y  + size / 2, size * x, size * y +  + size / 2);
                             }
 
+                            if(cellPattern === 'vertical-lines') {
+                                p.line(size * x, size * y, size * x, size * y + size);
+                                p.line(size * x + size, size * y, size * x + size, size * y + size);
+                            }
+
+                            if(cellPattern === 'horizontal-lines') {
+                                if(y == -loopIndex || y == (loopIndex-1)) {
+                                    p.line(size * x, size * y, size * x, size * y + size);
+                                    p.line(size * x + size, size * y, size * x + size, size * y + size);
+                                }
+                                else {
+                                    p.line(size * x, size * y, size * x + size, size * y);
+                                    p.line(size * x, size * y + size, size * x + size, size * y + size);
+                                }
+                            }
+
                             if(cellPattern === 'circle') {
                                 p.noFill();
+                                p.line(size * x, size * y, size * x + size / 2, size * y + size / 4);
+                                p.line(size * x + size, size * y, size * x + size / 2, size * y +  size / 4);
                                 p.circle(size * x + size / 2, size * y + size / 2, size / 2, size / 2);
+                                p.line(size * x, size * y + size, size * x + size / 2, size * y +  + size - size / 4);
+                                p.line(size * x + size, size * y + size, size * x + size / 2, size * y + size - size / 4);
+                                
                             }
                             
                             if(cellPattern === 'split-circles') {
@@ -184,6 +206,7 @@ const P5SketchWithAudio = () => {
                 }
                 loopIndex++;
             }
+            SaveJSONToFile(p.cells, 'grid.json');
         }
 
         p.hasStarted = false;
