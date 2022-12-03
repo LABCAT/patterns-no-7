@@ -64,49 +64,7 @@ const P5SketchWithAudio = () => {
             p.background(0);
             p.colorMode(p.HSB);
             p.noLoop();
-            
-            let size = p.width / 64;
-
-            p.rects = [];
-
-            
-            p.colourScheme = [];
-            let baseHue = p.random(0, 360);
-            for (let i = 0; i < 5; i++) {
-                p.colourScheme.push(
-                    baseHue
-                );
-                baseHue = baseHue + 90 > 360 ? baseHue - 270 : baseHue + 90;
-            }
-            
-            let loopIndex = 1;
-            for (let i = 1; i < 32; i++) {
-                const colour = p.color(
-                    p.colourScheme[i % 5], 100, 100
-                );
-                
-                for (let x = -i; x < i; x++) {
-                    for (let y = -i; y < i; y++) {
-
-                        const key = x + '-' + y;
-                        if (! p.rects.some(r => r.key === key)) {
-                            p.rects.push(
-                                {
-                                    key: key,
-                                    x: x,
-                                    y: y,
-                                    colour: colour,
-                                    loopIndex: loopIndex,
-                                    size: size
-                                }
-                            );
-                        }
-                        
-                    }
-                }
-                loopIndex++;
-                
-            }
+            p.generateCells();
         }
 
         p.draw = () => {
@@ -116,29 +74,115 @@ const P5SketchWithAudio = () => {
             }
         }
 
+
         p.executeCueSet1 = (note) => {
-            const { currentCue, duration } = note,
-                loopsPerBar = 32,
+            const { duration } = note,
+                
+                colourScheme = [],
+                saturation = p.random(50, 100),
+                brightness = p.random(50, 100),
+                loopsPerBar = p.random([12, 24, 36, 48]),
+                size = p.width / (loopsPerBar * 2),
                 delay = (duration * 1000) / loopsPerBar;
+
+            let baseHue = p.random(0, 360);
+            for (let i = 0; i < 9; i++) {
+                colourScheme.push(
+                    baseHue
+                );
+                baseHue = baseHue + 45 > 360 ? baseHue - 235 : baseHue + 45;
+            }
+            
             p.clear();
-            p.rects.filter(rect => rect.loopIndex === currentCue).forEach(rect => {
-                const { key, x, y, colour, size } = rect;
-                p.fill(colour);
-                p.rect(size * x, size * y, size, size);
-            });
+            
+            // p.background(baseHue, saturation, brightness);
+            p.background(0);
+            
 
             for (let i = 1; i <= loopsPerBar; i++) {
+                const cellPattern = p.random(['cross', 'plus','circle','split-circles']),
+                    colour = p.color(
+                        colourScheme[i % 10], saturation, brightness
+                    ),
+                    inverseHue = colourScheme[i % 10] + 180 > 360 ? colourScheme[i % 10] - 180 : colourScheme[i % 10] + 180;
+
                 setTimeout(
                     function () {
-                        p.rects.filter(rect => rect.loopIndex === i).forEach(rect => {
-                            const { key, x, y, colour, size } = rect;
+                        p.cells.filter(rect => rect.loopIndex === i).forEach(rect => {
+                            const { x, y } = rect;
                             p.fill(colour);
+                            
+                            // p.noStroke();
                             p.rect(size * x, size * y, size, size);
+
+                            p.stroke(0, 0, 100);
+                            // p.stroke(inverseHue, saturation, brightness);
+                            p.strokeWeight(2);
+                            if(cellPattern === 'cross') {
+                                p.line(size * x, size * y, size * x + size, size * y + size);
+                                p.line(size * x + size, size * y, size * x, size * y + size);
+                            }
+                            
+                            if(cellPattern === 'plus') {
+                                p.line(size * x + size / 2, size * y, size * x + size / 2, size * y + size);
+                                p.line(size * x + size, size * y  + size / 2, size * x, size * y +  + size / 2);
+                            }
+
+                            if(cellPattern === 'circle') {
+                                p.noFill();
+                                p.circle(size * x + size / 2, size * y + size / 2, size / 2, size / 2);
+                            }
+                            
+                            if(cellPattern === 'split-circles') {
+                                p.noFill();
+                                p.arc(
+                                    size * x, 
+                                    size * y + size / 2, 
+                                    size, 
+                                    size, 
+                                    -p.PI / 2, 
+                                    p.PI / 2
+                                );
+                                p.arc(
+                                    size * x + size, 
+                                    size * y + size / 2, 
+                                    size, 
+                                    size, 
+                                    p.PI / 2, 
+                                    p.PI + p.PI / 2
+                                );
+                            }
                         });
                     },
                     (delay * i)
                 );
                 
+            }
+        }
+
+        p.cells = [];
+
+        p.generateCells = () => {
+            let loopIndex = 1;
+            for (let i = 1; i < 64; i++) {
+                for (let x = -i; x < i; x++) {
+                    for (let y = -i; y < i; y++) {
+
+                        const key = x + '-' + y;
+                        if (! p.cells.some(r => r.key === key)) {
+                            p.cells.push(
+                                {
+                                    key: key,
+                                    x: x,
+                                    y: y,
+                                    loopIndex: loopIndex
+                                }
+                            );
+                        }
+                        
+                    }
+                }
+                loopIndex++;
             }
         }
 
