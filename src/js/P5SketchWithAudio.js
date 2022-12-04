@@ -102,7 +102,7 @@ const P5SketchWithAudio = () => {
             
 
             for (let i = 1; i <= loopsPerBar; i++) {
-                const cellPattern = p.random(['cross', 'horizontal-lines','circle','split-circles']),
+                const cellPattern = p.random(['cross', 'lines','circle','split-circles']),
                     colour = p.color(
                         colourScheme[i % 10], saturation, brightness
                     ),
@@ -129,17 +129,38 @@ const P5SketchWithAudio = () => {
                                 p.line(size * x + size, size * y  + size / 2, size * x, size * y +  + size / 2);
                             }
 
-                            if(cellPattern === 'vertical-lines') {
-                                p.line(size * x, size * y, size * x, size * y + size);
-                                p.line(size * x + size, size * y, size * x + size, size * y + size);
-                            }
-
-                            if(cellPattern === 'horizontal-lines') {
-                                if(y == -loopIndex || y == (loopIndex-1)) {
+                            if(cellPattern === 'lines') {
+                                if(y === -loopIndex && x === -loopIndex) {
+                                    //hori
+                                    p.line(size * x, size * y + size, size * x + size, size * y + size);
+                                    //vert
+                                    p.line(size * x + size, size * y, size * x + size, size * y + size);
+                                }
+                                else if(y === (loopIndex - 1) && x === -loopIndex) {
+                                    //hori
+                                    p.line(size * x, size * y, size * x + size, size * y);
+                                    //vert
+                                    p.line(size * x + size, size * y, size * x + size, size * y + size);
+                                } 
+                                else if(y === -loopIndex && x === (loopIndex - 1)) {
+                                    //hori
+                                    p.line(size * x, size * y + size, size * x + size, size * y + size);
+                                    //vert
+                                    p.line(size * x, size * y, size * x, size * y + size);
+                                } 
+                                else if(y === (loopIndex - 1) && x === (loopIndex - 1)) {
+                                    //hori
+                                    p.line(size * x, size * y, size * x + size, size * y);
+                                    //vert
+                                    p.line(size * x, size * y, size * x, size * y + size);
+                                } 
+                                else if(y === -loopIndex || y === (loopIndex-1)) {
+                                    //vert
                                     p.line(size * x, size * y, size * x, size * y + size);
                                     p.line(size * x + size, size * y, size * x + size, size * y + size);
                                 }
                                 else {
+                                    //hori
                                     p.line(size * x, size * y, size * x + size, size * y);
                                     p.line(size * x, size * y + size, size * x + size, size * y + size);
                                 }
